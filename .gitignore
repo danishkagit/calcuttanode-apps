@@ -1,0 +1,11 @@
+node_modules/
+app/node_modules/
+app/dist/
+app/.expo/
+backend/node_modules/
+flutter_app/.dart_tool/
+flutter_app/build/
+flutter_app/android/.gradle/
+flutter_app/ios/Pods/
+*.log
+.env

@@ -24,10 +24,10 @@
 CalcuttaNode Apps/
 ├── app/                    ← React Native (Expo)
 ├── flutter_app/            ← Flutter (Dart)
-└── backend/                ← Node.js/Express API server
+└── backend/                ← (optional — mobile apps now use main project backend)
 ```
 
-Both apps connect to the **same backend** — build one backend, both apps work.
+Both apps connect to the **main Calcutta Node project's backend** (`../Calcutta Node/server/`) which already has MongoDB Atlas configured. You do NOT need to run the `backend/` folder separately.
 
 ---
 
@@ -72,66 +72,26 @@ mongod --version      # Any version
 
 ## 3. Backend Setup
 
-### 3.1 Start MongoDB
+The mobile apps use the **main Calcutta Node backend** (`../Calcutta Node/server/`) which already has MongoDB Atlas connected.
 
-**Option A — Local MongoDB:**
-```bash
-# Windows: MongoDB starts automatically as a service
-# Or manually:
-mongod
-```
-
-**Option B — MongoDB Atlas (Cloud, Recommended):**
-1. Go to https://cloud.mongodb.com
-2. Create free account
-3. Create a cluster (free tier M0)
-4. Click "Connect" → "Connect your application"
-5. Copy the connection string (looks like: `mongodb+srv://user:pass@cluster.mongodb.net/calcuttanode`)
-
-### 3.2 Configure Environment
-
-Edit `backend/.env`:
-
-```env
-PORT=5000
-
-# For local MongoDB:
-MONGODB_URI=mongodb://localhost:27017/calcuttanode
-
-# For Atlas (replace with your connection string):
-# MONGODB_URI=mongodb+srv://YOUR_USER:YOUR_PASS@cluster.mongodb.net/calcuttanode
-
-JWT_SECRET=your_random_secret_string_here
-JWT_REFRESH_SECRET=another_random_string_here
-
-# Razorpay (for payments — optional for testing):
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-### 3.3 Start Backend Server
+### 3.1 Start the Main Backend
 
 ```bash
-cd "CalcuttaNode Apps/backend"
+cd "Calcutta Node/server"
 npm install              # First time only
 npm start                # Starts server on http://localhost:5000
 ```
 
-You should see:
-```
-MongoDB connected
-Calcutta Node API running on port 5000
-```
+MongoDB Atlas is already configured in `server/.env` — the connection string points to the free Atlas cluster.
 
-### 3.4 Verify Backend Works
+### 3.2 Verify Backend Works
 
-Open browser or Postman:
-```
-GET http://localhost:5000/api/health
+```bash
+curl http://localhost:5000/api/health
 → {"status":"ok","timestamp":"..."}
 ```
 
-### 3.5 Seed Data (Add Default Services)
+### 3.3 Seed Data (Add Default Services)
 
 The services must be added to the database. You can either:
 
@@ -165,20 +125,20 @@ npm install
 
 ### 4.2 Configure API URL
 
-Edit `src/constants/config.js`:
+The API URL is already set in `src/constants/config.js` — it auto-detects the right URL:
 
 ```javascript
-// Change this to your backend IP:
-// For local testing (same computer):
-export const API_BASE_URL = 'http://localhost:5000/api';
-
-// For testing on phone (use your computer's local IP):
-// Find your IP: Windows → ipconfig, Mac → ifconfig
-export const API_BASE_URL = 'http://192.168.1.XXX:5000/api';
-
-// For production (deployed server):
-export const API_BASE_URL = 'https://api.calcuttanode.app/api';
+// Platform-aware: Android emulator → 10.0.2.2, iOS simulator → localhost
+// Production → https://calcuttanode-api.onrender.com/api
+export const API_BASE_URL = __DEV__ ? DEV_API : PROD_API;
 ```
+
+For **physical device testing**, if the auto IP doesn't work, edit `config.js` and replace with your computer's local IP:
+```javascript
+const DEV_API = Platform.select({
+  android: 'http://YOUR_IP:5000/api',  // Replace YOUR_IP
+  ios: 'http://YOUR_IP:5000/api',
+});
 
 ### 4.3 Run on Phone (Development)
 
@@ -256,15 +216,18 @@ flutter pub get
 
 ### 5.2 Configure API URL
 
-Edit `lib/constants/config.dart`:
+The API URL is already set in `lib/constants/config.dart` — it auto-detects the right URL:
 
 ```dart
 class AppConfig {
-  // Change this to your backend IP:
-  static const String apiBaseUrl = 'http://192.168.1.XXX:5000/api';
-  // For production: 'https://api.calcuttanode.app/api'
+  // Release → https://calcuttanode-api.onrender.com/api
+  // Android emulator → http://10.0.2.2:5000/api
+  // iOS simulator / desktop → http://localhost:5000/api
+  static String get apiBaseUrl { ... }
 }
 ```
+
+For **physical device testing**, edit `config.dart` and override the dev URL with your computer's IP.
 
 ### 5.3 Run on Phone (Development)
 

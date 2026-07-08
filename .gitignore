@@ -9,3 +9,5 @@ flutter_app/android/.gradle/
 flutter_app/ios/Pods/
 *.log
 .env
+app/
+Calcutta Node App/app/node_modules/

@@ -15,17 +15,49 @@ class _AIChatScreenState extends State<AIChatScreen> {
   final _msgCtrl = TextEditingController();
   final _scrollCtrl = ScrollController();
   final List<Map<String, String>> _messages = [];
-  String _selectedModel = 'deepseek';
+  String _selectedModel = 'deepseek-v4-flash-free';
   bool _loading = false;
-
-  static const _models = [
-    {'id': 'deepseek', 'name': 'DeepSeek', 'icon': '🧠'},
-    {'id': 'mimo', 'name': 'MiMo', 'icon': '✨'},
-    {'id': 'north', 'name': 'North', 'icon': '⚡'},
-    {'id': 'nemotron', 'name': 'Nemotron', 'icon': '🔬'},
+  List<Map<String, String>> _models = [
+    {'id': 'deepseek-v4-flash-free', 'name': 'DeepSeek V4 Flash', 'icon': '🔍'},
+    {'id': 'mimo-v2.5-free', 'name': 'MiMo V2.5', 'icon': '🧠'},
+    {'id': 'north-mini-code-free', 'name': 'North Mini Code', 'icon': '⚡'},
+    {'id': 'nemotron-3-ultra-free', 'name': 'Nemotron 3 Ultra', 'icon': '🚀'},
+    {'id': 'hy3-free', 'name': 'Hy3', 'icon': '🌊'},
+    {'id': 'big-pickle', 'name': 'Big Pickle', 'icon': '🥒'},
+    {'id': 'antigravity-gemini-3.1-pro', 'name': 'Gemini 3.1 Pro', 'icon': '🌟'},
+    {'id': 'antigravity-gemini-3-flash', 'name': 'Gemini 3 Flash', 'icon': '⚡'},
+    {'id': 'gemini-2.5-flash', 'name': 'Gemini 2.5 Flash', 'icon': '💎'},
+    {'id': 'antigravity-claude-sonnet-4-6', 'name': 'Claude Sonnet 4.6', 'icon': '🎯'},
+    {'id': 'antigravity-claude-opus-4-6-thinking', 'name': 'Claude Opus 4.6', 'icon': '🧠'},
   ];
 
   static const _suggestions = ['What services do you offer?', 'How can I fix a slow computer?', 'Tell me about your hosting plans'];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchModels();
+  }
+
+  Future<void> _fetchModels() async {
+    try {
+      final res = await http.get(Uri.parse('${AppConfig.apiBaseUrl}/ai/models'));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as List;
+        if (data.isNotEmpty) {
+          final fetched = data.map((m) => {
+            'id': m['id'] as String,
+            'name': m['name'] as String,
+            'icon': (m['icon'] as String?) ?? '🧠',
+          }).toList();
+          setState(() {
+            _models = fetched;
+            _selectedModel = fetched.first['id']!;
+          });
+        }
+      }
+    } catch (_) {}
+  }
 
   Future<void> _send(String text) async {
     setState(() {
@@ -58,11 +90,11 @@ class _AIChatScreenState extends State<AIChatScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('AI Chat', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 18)),
-            Text('4 free models — auto-fallback', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+            const Text('AI Chat', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 18)),
+            Text('${_models.length} free models — auto-fallback', style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
           ],
         ),
         backgroundColor: AppColors.surface,

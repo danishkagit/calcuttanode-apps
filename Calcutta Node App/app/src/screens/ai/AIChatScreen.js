@@ -1,24 +1,40 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../api/client';
 import { colors } from '../../constants/colors';
+import { API_BASE_URL } from '../../constants/config';
 
-const models = [
-  { id: 'deepseek', name: 'DeepSeek', icon: '🧠' },
-  { id: 'mimo', name: 'MiMo', icon: '✨' },
-  { id: 'north', name: 'North', icon: '⚡' },
-  { id: 'nemotron', name: 'Nemotron', icon: '🔬' },
+const defaultModels = [
+  { id: 'deepseek-v4-flash-free', name: 'DeepSeek V4 Flash', icon: '🔍' },
+  { id: 'mimo-v2.5-free', name: 'MiMo V2.5', icon: '🧠' },
+  { id: 'north-mini-code-free', name: 'North Mini Code', icon: '⚡' },
+  { id: 'nemotron-3-ultra-free', name: 'Nemotron 3 Ultra', icon: '🚀' },
+  { id: 'hy3-free', name: 'Hy3', icon: '🌊' },
+  { id: 'big-pickle', name: 'Big Pickle', icon: '🥒' },
+  { id: 'antigravity-gemini-3.1-pro', name: 'Gemini 3.1 Pro', icon: '🌟' },
+  { id: 'antigravity-gemini-3-flash', name: 'Gemini 3 Flash', icon: '⚡' },
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', icon: '💎' },
+  { id: 'antigravity-claude-sonnet-4-6', name: 'Claude Sonnet 4.6', icon: '🎯' },
+  { id: 'antigravity-claude-opus-4-6-thinking', name: 'Claude Opus 4.6', icon: '🧠' },
 ];
 
 const suggestions = ['What services do you offer?', 'How can I fix a slow computer?', 'Tell me about your hosting plans'];
 
 export default function AIChatScreen() {
+  const [models, setModels] = useState(defaultModels);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState(models[0].id);
+  const [selectedModel, setSelectedModel] = useState(models[0]?.id || defaultModels[0].id);
   const scrollRef = useRef();
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/ai/models`)
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data) && data.length) { setModels(data); setSelectedModel(data[0].id); } })
+      .catch(() => {});
+  }, []);
 
   async function sendMessage(text) {
     const userMsg = { role: 'user', content: text };
@@ -40,7 +56,7 @@ export default function AIChatScreen() {
       <LinearGradient colors={['rgba(139,92,246,0.04)', 'transparent']} style={styles.grad} />
       <View style={styles.header}>
         <Text style={styles.title}>AI Chat</Text>
-        <Text style={styles.subtitle}>4 free models — auto-fallback</Text>
+        <Text style={styles.subtitle}>{models.length} free models — auto-fallback</Text>
       </View>
       <ScrollView horizontal style={styles.modelRow} showsHorizontalScrollIndicator={false}>
         {models.map((m) => (

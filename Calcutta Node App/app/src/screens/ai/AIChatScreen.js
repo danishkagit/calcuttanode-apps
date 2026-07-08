@@ -20,6 +20,12 @@ const defaultModels = [
 ];
 
 const suggestions = ['What services do you offer?', 'How can I fix a slow computer?', 'Tell me about your hosting plans'];
+const seoSuggestions = [
+  'Write a blog post about "Benefits of Remote IT Support for Small Businesses"',
+  'Generate SEO meta tags for a web development services page',
+  'Suggest keywords for "digital marketing agency in Kolkata"',
+  'Create a JSON-LD schema for a local business',
+];
 
 export default function AIChatScreen() {
   const [models, setModels] = useState(defaultModels);
@@ -79,6 +85,14 @@ export default function AIChatScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            <Text style={styles.seoLabel}>🔍 SEO Tools</Text>
+            <View style={styles.suggestions}>
+              {seoSuggestions.map((s, i) => (
+                <TouchableOpacity key={i} style={styles.seoChip} onPress={() => sendMessage(s)}>
+                  <Text style={styles.suggestionText}>{s}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
         {messages.map((msg, i) => (
@@ -121,6 +135,8 @@ const styles = StyleSheet.create({
   welcomeSub: { fontSize: 13, color: colors.textMuted, marginTop: 4, marginBottom: 20 },
   suggestions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   suggestionChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  seoLabel: { fontSize: 12, fontWeight: '700', color: colors.neonCyan, marginTop: 16, marginBottom: 8 },
+  seoChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: colors.neonCyan + '10', borderWidth: 1, borderColor: colors.neonCyan + '30', marginBottom: 4 },
   suggestionText: { fontSize: 13, color: colors.textSecondary },
   bubble: { maxWidth: '80%', padding: 14, borderRadius: 18, marginBottom: 10 },
   userBubble: { backgroundColor: colors.neonCyan, alignSelf: 'flex-end', borderBottomRightRadius: 4 },

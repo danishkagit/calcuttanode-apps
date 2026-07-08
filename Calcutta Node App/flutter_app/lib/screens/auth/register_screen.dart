@@ -44,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             children: [
               const SizedBox(height: 60),
-              Image.asset('assets/logo.png', width: 80, height: 80),
+              Image.asset('assets/logo.png', width: 100, height: 100),
               const SizedBox(height: 8),
               const Text('Create Account', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
               const SizedBox(height: 4),

@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Calcutta Node",
+    "slug": "calcuttanode",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0D0F17",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.calcuttanode.app",
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": false
+      }
+    },
+    "android": {
+      "package": "com.calcuttanode.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0D0F17",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-status-bar"
+    ]
+  }
+}

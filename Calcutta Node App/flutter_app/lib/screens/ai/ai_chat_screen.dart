@@ -32,6 +32,12 @@ class _AIChatScreenState extends State<AIChatScreen> {
   ];
 
   static const _suggestions = ['What services do you offer?', 'How can I fix a slow computer?', 'Tell me about your hosting plans'];
+  static const _seoSuggestions = [
+    'Write a blog post about "Benefits of Remote IT Support for Small Businesses"',
+    'Generate SEO meta tags for a web development services page',
+    'Suggest keywords for "digital marketing agency in Kolkata"',
+    'Create a JSON-LD schema for a local business',
+  ];
 
   @override
   void initState() {
@@ -143,6 +149,19 @@ class _AIChatScreenState extends State<AIChatScreen> {
                           label: Text(s, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
                           backgroundColor: AppColors.surface,
                           side: const BorderSide(color: AppColors.border),
+                          onPressed: () => _send(s),
+                        )).toList(),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('🔍 SEO Tools', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.neonCyan)),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: _seoSuggestions.map((s) => ActionChip(
+                          label: Text(s, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                          backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                          side: const BorderSide(color: AppColors.neonCyan),
                           onPressed: () => _send(s),
                         )).toList(),
                       ),

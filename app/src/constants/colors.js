@@ -2,8 +2,8 @@ export const colors = {
   background: '#0D0F17',
   surface: '#171A26',
   surfaceLight: '#1E2235',
-  neonCyan: '#7EBBC5',
-  electricViolet: '#543A67',
+  neonCyan: '#435A63',
+  electricViolet: '#593C5F',
   textPrimary: '#F1F1F6',
   textSecondary: '#9CA3AF',
   textMuted: '#6B7280',
@@ -12,6 +12,6 @@ export const colors = {
   error: '#EF4444',
   white: '#FFFFFF',
   black: '#000000',
-  border: 'rgba(84, 58, 103, 0.15)',
+  border: 'rgba(89, 60, 95, 0.15)',
   cardBg: 'rgba(23, 26, 38, 0.8)',
 };

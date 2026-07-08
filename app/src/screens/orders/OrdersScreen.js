@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../api/client';
 import { colors } from '../../constants/colors';
 
-const statusColors = { pending: '#F59E0B', 'in-progress': '#7EBBC5', completed: '#10B981', cancelled: '#EF4444' };
+const statusColors = { pending: '#F59E0B', 'in-progress': '#435A63', completed: '#10B981', cancelled: '#EF4444' };
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);

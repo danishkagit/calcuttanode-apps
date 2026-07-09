@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'constants/colors.dart';
 import 'providers/auth_provider.dart';
+import 'providers/theme_provider.dart';
 import 'widgets/loading_spinner.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -27,39 +27,61 @@ class CalcuttaNodeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-      child: MaterialApp(
-        title: 'Calcutta Node.',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: AppColors.background,
-          colorScheme: const ColorScheme.dark(
-            primary: AppColors.neonCyan,
-            secondary: AppColors.electricViolet,
-            surface: AppColors.surface,
-          ),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: AppColors.surface,
-            foregroundColor: AppColors.textPrimary,
-            elevation: 0,
-          ),
-        ),
-        home: const AuthGate(),
-        routes: {
-          '/login': (c) => const LoginScreen(),
-          '/register': (c) => const RegisterScreen(),
-          '/home': (c) => const HomeScreen(),
-          '/services': (c) => const ServicesListScreen(),
-          '/service-detail': (c) => const ServiceDetailScreen(),
-          '/orders': (c) => const OrdersScreen(),
-          '/ai': (c) => const AIChatScreen(),
-          '/dashboard': (c) => const DashboardScreen(),
-          '/wallet': (c) => const WalletScreen(),
-          '/products': (c) => const ProductsScreen(),
-          '/subscriptions': (c) => const SubscriptionsScreen(),
-          '/profile': (c) => const ProfileScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+      ],
+      child: Consumer<ThemeNotifier>(
+        builder: (context, theme, _) {
+          final isDark = theme.isDark;
+          return MaterialApp(
+            title: 'Calcutta Node.',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              brightness: isDark ? Brightness.dark : Brightness.light,
+              scaffoldBackgroundColor: isDark ? AppColors.background : AppColors.lightBackground,
+              colorScheme: ColorScheme(
+                brightness: isDark ? Brightness.dark : Brightness.light,
+                primary: isDark ? AppColors.neonCyan : AppColors.lightNeonCyan,
+                secondary: isDark ? AppColors.electricViolet : AppColors.lightElectricViolet,
+                surface: isDark ? AppColors.surface : AppColors.lightSurface,
+                error: isDark ? AppColors.error : AppColors.lightError,
+                onPrimary: AppColors.textPrimary,
+                onSecondary: AppColors.textPrimary,
+                onSurface: isDark ? AppColors.textPrimary : AppColors.lightTextPrimary,
+                onError: AppColors.textPrimary,
+              ),
+              appBarTheme: AppBarTheme(
+                backgroundColor: isDark ? AppColors.surface : AppColors.lightSurface,
+                foregroundColor: isDark ? AppColors.textPrimary : AppColors.lightTextPrimary,
+                elevation: 0,
+              ),
+              cardTheme: CardThemeData(
+                color: isDark ? AppColors.cardBg : AppColors.lightCardBg,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: isDark ? AppColors.border : AppColors.lightBorder),
+                ),
+              ),
+              dividerColor: isDark ? AppColors.border : AppColors.lightBorder,
+            ),
+            home: const AuthGate(),
+            routes: {
+              '/login': (c) => const LoginScreen(),
+              '/register': (c) => const RegisterScreen(),
+              '/home': (c) => const HomeScreen(),
+              '/services': (c) => const ServicesListScreen(),
+              '/service-detail': (c) => const ServiceDetailScreen(),
+              '/orders': (c) => const OrdersScreen(),
+              '/ai': (c) => const AIChatScreen(),
+              '/dashboard': (c) => const DashboardScreen(),
+              '/wallet': (c) => const WalletScreen(),
+              '/products': (c) => const ProductsScreen(),
+              '/subscriptions': (c) => const SubscriptionsScreen(),
+              '/profile': (c) => const ProfileScreen(),
+            },
+          );
         },
       ),
     );

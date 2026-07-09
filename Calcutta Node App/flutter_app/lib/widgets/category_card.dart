@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/colors.dart';
+import '../providers/theme_provider.dart';
 
 class CategoryCard extends StatelessWidget {
   final String name;
@@ -25,6 +27,14 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeNotifier>();
+    final isDark = theme.isDark;
+
+    final textPrimary = isDark ? AppColors.textPrimary : AppColors.lightTextPrimary;
+    final textMuted = isDark ? AppColors.textMuted : AppColors.lightTextMuted;
+    final accent = isDark ? AppColors.neonCyan : AppColors.lightNeonCyan;
+    final violet = isDark ? AppColors.electricViolet : AppColors.lightElectricViolet;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -32,11 +42,11 @@ class CategoryCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.12)),
+          border: Border.all(color: accent.withValues(alpha: 0.12)),
           gradient: LinearGradient(
             colors: [
-              AppColors.neonCyan.withValues(alpha: 0.08),
-              AppColors.electricViolet.withValues(alpha: 0.04),
+              accent.withValues(alpha: 0.08),
+              violet.withValues(alpha: 0.04),
             ],
           ),
         ),
@@ -44,9 +54,9 @@ class CategoryCard extends StatelessWidget {
           children: [
             Text(_icons[name] ?? '📦', style: const TextStyle(fontSize: 28)),
             const SizedBox(height: 8),
-            Text(name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: textPrimary), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
             const SizedBox(height: 4),
-            Text('$count services', style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+            Text('$count services', style: TextStyle(fontSize: 11, color: textMuted)),
           ],
         ),
       ),

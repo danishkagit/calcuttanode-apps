@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../../constants/colors.dart';
 import '../../constants/config.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../widgets/service_card.dart';
 import '../../widgets/category_card.dart';
 
@@ -45,25 +46,34 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final theme = context.watch<ThemeNotifier>();
     final user = auth.user;
     final featured = _services.where((s) => s['featured'] == true).take(5).toList();
+    final isDark = theme.isDark;
+
+    final bg = isDark ? AppColors.background : AppColors.lightBackground;
+    final textPrimary = isDark ? AppColors.textPrimary : AppColors.lightTextPrimary;
+    final textSecondary = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final textMuted = isDark ? AppColors.textMuted : AppColors.lightTextMuted;
+    final accent = isDark ? AppColors.neonCyan : AppColors.lightNeonCyan;
+    final border = isDark ? AppColors.border : AppColors.lightBorder;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: bg,
       body: RefreshIndicator(
-        color: AppColors.neonCyan,
+        color: accent,
         onRefresh: _fetchServices,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
               floating: true,
-              backgroundColor: AppColors.background,
+              backgroundColor: bg,
               elevation: 0,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Hello${user != null ? ', ${user['name']}' : ''} 👋', style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
-                  const Text('Calcutta Node.', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                  Text('Hello${user != null ? ', ${user['name']}' : ''} 👋', style: TextStyle(fontSize: 14, color: textSecondary)),
+                  Text('Calcutta Node.', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: textPrimary)),
                 ],
               ),
               actions: [
@@ -78,11 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 child: Row(
                   children: [
-                    _statBox('${_services.length}', 'Services'),
-                    Container(width: 1, height: 40, color: AppColors.border),
-                    _statBox('${_categories.length}', 'Categories'),
-                    Container(width: 1, height: 40, color: AppColors.border),
-                    _statBox('🌐', 'Worldwide'),
+                    _statBox('${_services.length}', 'Services', accent, textMuted),
+                    Container(width: 1, height: 40, color: border),
+                    _statBox('${_categories.length}', 'Categories', accent, textMuted),
+                    Container(width: 1, height: 40, color: border),
+                    _statBox('🌐', 'Worldwide', accent, textMuted),
                   ],
                 ),
               ),
@@ -93,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Categories', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                    Text('Categories', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary)),
                     const SizedBox(height: 12),
                     Wrap(
                       spacing: 10,
@@ -121,10 +131,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Featured Services', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                      Text('Featured Services', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary)),
                       TextButton(
                         onPressed: () => Navigator.pushNamed(context, '/services'),
-                        child: const Text('See all →', style: TextStyle(color: AppColors.neonCyan, fontSize: 13)),
+                        child: Text('See all →', style: TextStyle(color: accent, fontSize: 13)),
                       ),
                     ],
                   ),
@@ -147,13 +157,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _statBox(String value, String label) {
+  Widget _statBox(String value, String label, Color accent, Color textMuted) {
     return Expanded(
       child: Column(
         children: [
-          Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.neonCyan)),
+          Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: accent)),
           const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+          Text(label, style: TextStyle(fontSize: 11, color: textMuted)),
         ],
       ),
     );
